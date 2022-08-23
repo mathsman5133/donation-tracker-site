@@ -20,9 +20,9 @@ export default async function handler(req, res) {
                                 FROM players
                                 INNER JOIN clans
                                 ON clans.clan_tag = players.clan_tag
-                                WHERE clans.channel_id = $1
+                                WHERE clans.guild_id = $1
                                 AND season_id = 35`
-        const values = [BigInt(cid)] // req.body.content
+        const values = [BigInt(gid)] // req.body.content
         console.log(values, "hello");
       const result = await conn.query(
           query,

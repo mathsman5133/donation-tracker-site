@@ -90,8 +90,17 @@ export default function Home() {
         setClanCheckedState(rows);
     }
 
-    const onSubmit = (event) => {
+    const onSubmit = async(event) => {
+        const meta = boardMeta;
+        meta.channel_id = cid;
+        meta.type = 'donation';
 
+        const options = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(meta)
+        }
+        await fetch(`../api/saveBoard`, options)
     };
 
     if (dataLoading | clanLoading | playerLoading) {
