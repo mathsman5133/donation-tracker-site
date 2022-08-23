@@ -241,7 +241,8 @@ export default function Home() {
                 type="submit"
                 variant="contained"
                 fullWidth
-                sx={{mt: 2, alignItems: "center", maxWidth: "sm"}}                
+                sx={{mt: 2, alignItems: "center", maxWidth: "sm"}}    
+                onClick={onSubmit}           
                 >
                     Save
             </Button>
