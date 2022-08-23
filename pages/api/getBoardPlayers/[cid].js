@@ -1,7 +1,7 @@
 import conn from '../../../lib/db'
 
 export default async function handler(req, res) {
-    const {cid} = req.query;
+    const {gid} = req.query;
 
     try {
         console.log("req nom", req.body)
