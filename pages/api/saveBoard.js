@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import conn from '../../../lib/db'
+import conn from '../../lib/db'
 
 export default async function handler(req, res) {
     const body = req.body;
