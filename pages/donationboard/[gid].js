@@ -107,9 +107,9 @@ export default function Home() {
         options.body = JSON.stringify({token: accessToken, guild_id: gid});
         const res = await fetch(`../api/validateToken`, options);
         const data = res.json()
-        if (data.status != "ok") {
+        if (data != "ok") {
             setFailOpen(true);
-            console.log("failed", data.status)
+            console.log("failed", data)
             return;
         }
         const meta = boardMeta;
