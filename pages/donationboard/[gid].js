@@ -16,8 +16,12 @@ import Icon from '@mui/material/Icon';
 import { Typography } from "@mui/material";
 import Board from '../../components/board';
 import { useRouter } from 'next/router';
+import Snackbar from '@mui/material/Snackbar';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import MuiAlert from '@mui/material/Alert';
 
-
+  
 export default function Home() {
     const router = useRouter();
     const { cid, gid } = router.query;
@@ -25,6 +29,10 @@ export default function Home() {
     const [boardMeta, setBoardMeta] = React.useState({});
     const [clanTagsChecked, setClanCheckedState] = React.useState([]);
     const [playerData, setPlayerData] = React.useState([])
+
+    const [successOpen, setSuccessOpen] = React.useState(false);
+    const [failOpen, setFailOpen] = React.useState(false);
+    const [accessToken, setAccessToken] = React.useState(router.accesstoken);
 
     const [dataLoading, setDataLoading] = React.useState(true)
     const [clanLoading, setClanLoading] = React.useState(true)
@@ -90,30 +98,46 @@ export default function Home() {
         setClanCheckedState(rows);
     }
 
-    const onSubmit = async(event) => {
-        const meta = boardMeta;
-        meta.channel_id = cid;
-        meta.type = 'donation';
-
+    const handleSubmit = async(event) => {
         const options = {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(meta)
+        };
+
+        options.body = JSON.stringify({token: accessToken, guild_id: gid});
+        const res = await fetch(`../api/validateToken`, options);
+        if (data.json()["status"] != "ok") {
+            setFailOpen(true);
+            return;
         }
-        await fetch(`../api/saveBoard`, options)
+        const meta = boardMeta;
+        meta.channel_id = cid;
+        meta.type = 'donation';
+        options.body = JSON.stringify(meta)
+ 
+        await fetch(`../api/saveBoard`, options);
+        setSuccessOpen(true);
     };
 
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        setSuccessOpen(false);
+        setFailOpen(false);
+      };
+    
     if (dataLoading | clanLoading | playerLoading) {
         return <div>Loading...</div>
     }
-    
+
     return (
         <div className={styles.container}>
             <Head>
                 <title>Donationbot Board Editor</title>
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-  
 
             <main className={styles.main}>
 
@@ -133,7 +157,7 @@ export default function Home() {
 
             <Grid container spacing={2} maxWidth="full">
             <Grid item xs={12} sm={4}>
-                <Box component="form" onSubmit={onSubmit}>
+                <Box component="form">
                     <Grid container spacing={2} maxWidth="sm" justifyContent="flex-start">
                         <Grid item xs={12}>
                             <TextField 
@@ -205,6 +229,42 @@ export default function Home() {
                                 <MenuItem value={"desc"}>Descending</MenuItem>
                             </Select>
                         </Grid>
+                        {router.query.accesstoken ? "": 
+                        <Grid item xs={12}>                  
+                            <TextField 
+                                fullWidth 
+                                required
+                                id="Access Token" 
+                                label="Access Token" 
+                                variant="outlined" 
+                                onChange={event => setAccessToken(event.target.value)} 
+                                value={accessToken}
+                                helperText="Use the /accesstoken command on the bot to get this."
+                            />
+                        </Grid>}
+                        
+                        <Grid item xs={12}>
+                            <Button
+                                // type="submit"
+                                variant="contained"
+                                fullWidth
+                                sx={{mt: 2, alignItems: "center", maxWidth: "sm"}}    
+                                onClick={handleSubmit}>
+                                    Save
+                            </Button>
+                        </Grid>
+                        <Snackbar open={successOpen} autoHideDuration={6000} onClose={handleClose}>
+                            <MuiAlert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                                Board Configuration Saved
+                            </MuiAlert>
+                        </Snackbar>
+
+                        <Snackbar open={failOpen} autoHideDuration={6000} onClose={handleClose}>
+                            <MuiAlert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                                Access Token Incorrect!
+                            </MuiAlert>
+                        </Snackbar>
+
 
                     </Grid>
 
@@ -236,16 +296,6 @@ export default function Home() {
             </Grid>
 
             </Grid>
-
-            <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                sx={{mt: 2, alignItems: "center", maxWidth: "sm"}}    
-                onClick={onSubmit}           
-                >
-                    Save
-            </Button>
   
             </main>
         </div>

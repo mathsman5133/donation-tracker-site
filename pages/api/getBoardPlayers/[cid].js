@@ -29,7 +29,7 @@ export default async function handler(req, res) {
           values
       );
       console.log( "ttt",result);
-      res.status(200).json(result.rows)
+      res.status(200).setHeader('Cache-Control', 's-maxage=300').json(result.rows)
   } catch ( error ) {
       console.log( error );
   }
