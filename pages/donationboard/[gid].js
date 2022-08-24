@@ -106,7 +106,7 @@ export default function Home() {
 
         options.body = JSON.stringify({token: accessToken, guild_id: gid});
         const res = await fetch(`../api/validateToken`, options);
-        if (data.json()["status"] != "ok") {
+        if (res.json()["status"] != "ok") {
             setFailOpen(true);
             return;
         }
