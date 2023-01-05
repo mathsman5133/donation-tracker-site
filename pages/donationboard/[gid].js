@@ -104,7 +104,7 @@ export default function Home() {
             headers: {'Content-Type': 'application/json'},
         };
 
-        options.body = JSON.stringify({token: accessToken, guild_id: gid});
+        options.body = JSON.stringify({token: router.query.accesstoken ? router.query.accesstoken : accessToken, guild_id: gid});
         fetch(`../api/validateToken`, options).then(res => res.json()).then(
             data => {
                 if (data.status != "ok") {
