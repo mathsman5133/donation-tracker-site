@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
     try {
         console.log("req nom", req.body)
-        const query = `SELECT title, icon_url, sort_by, per_page, 'asc' as sort_type FROM boards WHERE channel_id=$1 AND type=$2`
+        const query = `SELECT title, icon_url, sort_by, coalesce(nullif(per_page, 0), 20), 'asc' as sort_type FROM boards WHERE channel_id=$1 AND type=$2`
         const values = [BigInt(cid), 'donation'] // req.body.content
 
       const result = await conn.query(
