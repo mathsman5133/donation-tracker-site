@@ -32,7 +32,7 @@ export default function Home() {
 
     const [successOpen, setSuccessOpen] = React.useState(false);
     const [failOpen, setFailOpen] = React.useState(false);
-    const [accessToken, setAccessToken] = React.useState(router.accesstoken);
+    const [accessToken, setAccessToken] = React.useState(router.query.accesstoken);
 
     const [dataLoading, setDataLoading] = React.useState(true)
     const [clanLoading, setClanLoading] = React.useState(true)
